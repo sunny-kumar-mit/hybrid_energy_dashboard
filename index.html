@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
   <base href="/">
+
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Advanced Hybrid Energy Management Dashboard">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Energy Dashboard">
+  <meta name="apple-mobile-web-app-title" content="Hybrid Energy Dashboard">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
-  
+
   <title>Hybrid Energy Dashboard</title>
   <link rel="manifest" href="manifest.json">
-  
+
   <style>
     * {
       margin: 0;
@@ -28,68 +29,71 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
       overflow: hidden;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.8s ease;
     }
 
-    .intro-container {
+    /* Intro Screen */
+    #intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .intro-content {
       text-align: center;
       color: white;
-      z-index: 10;
-      position: relative;
-      transition: opacity 0.8s ease;
+      padding: 2rem;
+    }
+
+    .logo-container {
+      margin-bottom: 2rem;
     }
 
     .logo {
       width: 120px;
       height: 120px;
-      margin: 0 auto 30px;
-      background: rgba(255, 255, 255, 0.1);
+      background: linear-gradient(45deg, #00b894, #00cec9);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      margin: 0 auto;
       animation: float 3s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(0, 184, 148, 0.3);
     }
 
-    .logo-inner {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(45deg, #00ff88, #00ccff);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
+    .logo-icon {
+      font-size: 3rem;
       color: white;
-      animation: pulse 2s ease-in-out infinite;
     }
 
     h1 {
       font-size: 3.5rem;
       font-weight: 700;
-      margin-bottom: 20px;
-      background: linear-gradient(45deg, #00ff88, #00ccff);
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #00b894, #00cec9, #0984e3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.5s forwards;
+      animation: glow 2s ease-in-out infinite alternate;
     }
 
-    .subtitle {
+    .tagline {
       font-size: 1.4rem;
-      margin-bottom: 40px;
+      margin-bottom: 2rem;
       opacity: 0.9;
-      opacity: 0;
-      animation: fadeInUp 1s ease 1s forwards;
+      font-weight: 300;
     }
 
     .loading-bar {
@@ -97,46 +101,44 @@
       height: 4px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
-      margin: 30px auto;
       overflow: hidden;
-      opacity: 0;
-      animation: fadeInUp 1s ease 1.5s forwards;
+      margin: 2rem auto;
     }
 
     .loading-progress {
-      width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #00ff88, #00ccff);
+      background: linear-gradient(90deg, #00b894, #00cec9);
       border-radius: 10px;
-      animation: loading 3s ease 2s forwards;
+      width: 0%;
+      animation: loading 3s ease-in-out forwards;
+      transition: width 0.3s ease;
     }
 
-    .features {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
-      opacity: 0;
-      animation: fadeInUp 1s ease 2s forwards;
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+      max-width: 800px;
     }
 
-    .feature {
+    .feature-item {
       background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 15px;
+      padding: 1rem;
+      border-radius: 10px;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      min-width: 150px;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, background 0.3s ease;
     }
 
-    .feature:hover {
+    .feature-item:hover {
       transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .feature-icon {
       font-size: 2rem;
-      margin-bottom: 10px;
+      margin-bottom: 0.5rem;
     }
 
     .feature-text {
@@ -144,55 +146,84 @@
       opacity: 0.9;
     }
 
-    .particles {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+    .pulse-dots {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 2rem;
     }
 
-    .particle {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.3);
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      animation: floatParticle 6s ease-in-out infinite;
+      background: #00b894;
+      animation: pulse 1.5s ease-in-out infinite;
     }
 
-    .status-text {
-      margin-top: 20px;
-      font-size: 1rem;
-      opacity: 0.8;
-      opacity: 0;
-      animation: fadeInUp 1s ease 3s forwards;
+    .pulse-dot:nth-child(2) {
+      animation-delay: 0.2s;
+      background: #00cec9;
     }
 
-    /* Flutter app container */
+    .pulse-dot:nth-child(3) {
+      animation-delay: 0.4s;
+      background: #0984e3;
+    }
+
+    /* Flutter App Container */
     #flutter-app {
-      position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       opacity: 0;
-      transition: opacity 0.8s ease;
-      pointer-events: none;
+      transition: opacity 1s ease;
     }
 
-    #flutter-app.loaded {
-      opacity: 1;
-      pointer-events: all;
-    }
-
+    /* Animations */
     @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes glow {
+      from {
+        filter: drop-shadow(0 0 10px rgba(0, 184, 148, 0.5));
+      }
+      to {
+        filter: drop-shadow(0 0 20px rgba(0, 184, 148, 0.8));
+      }
+    }
+
+    @keyframes loading {
+      0% {
+        width: 0%;
+      }
+      20% {
+        width: 30%;
+      }
+      50% {
+        width: 60%;
+      }
+      80% {
+        width: 90%;
+      }
+      100% {
+        width: 100%;
+      }
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+      }
     }
 
     @keyframes fadeInUp {
@@ -206,183 +237,219 @@
       }
     }
 
-    @keyframes loading {
-      0% { width: 0%; }
-      50% { width: 70%; }
-      100% { width: 100%; }
+    .fade-in-up {
+      animation: fadeInUp 1s ease forwards;
     }
 
-    @keyframes floatParticle {
-      0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-      }
+    .delay-1 {
+      animation-delay: 0.3s;
+      opacity: 0;
     }
 
-    /* Responsive */
+    .delay-2 {
+      animation-delay: 0.6s;
+      opacity: 0;
+    }
+
+    .delay-3 {
+      animation-delay: 0.9s;
+      opacity: 0;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      h1 { font-size: 2.5rem; }
-      .subtitle { font-size: 1.1rem; }
-      .features { flex-direction: column; align-items: center; }
-      .feature { min-width: 200px; }
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .tagline {
+        font-size: 1.1rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+      }
+      
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .logo-icon {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Animated Background Particles -->
-  <div class="particles" id="particles"></div>
-
-  <!-- Main Intro Content -->
-  <div class="intro-container" id="introContainer">
-    <div class="logo">
-      <div class="logo-inner">⚡</div>
+  <!-- Animated Intro Screen -->
+  <div id="intro-screen">
+    <div class="intro-content">
+      <div class="logo-container fade-in-up">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+        </div>
+      </div>
+      
+      <h1 class="fade-in-up delay-1">Hybrid Energy Dashboard</h1>
+      <p class="tagline fade-in-up delay-1">Smart Energy Management & Monitoring System</p>
+      
+      <div class="features-grid fade-in-up delay-2">
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div class="feature-text">Real-time Analytics</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔋</div>
+          <div class="feature-text">EV Integration</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌱</div>
+          <div class="feature-text">Carbon Tracking</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text">Smart Grid</div>
+        </div>
+      </div>
+      
+      <div class="loading-bar fade-in-up delay-2">
+        <div class="loading-progress" id="loading-progress"></div>
+      </div>
+      
+      <div class="pulse-dots fade-in-up delay-3">
+        <div class="pulse-dot"></div>
+        <div class="pulse-dot"></div>
+        <div class="pulse-dot"></div>
+      </div>
+      
+      <p class="fade-in-up delay-3" style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+        Initializing smart energy systems...
+      </p>
     </div>
-    
-    <h1>Hybrid Energy Dashboard</h1>
-    <p class="subtitle">Smart Energy Management & Real-time Monitoring</p>
-    
-    <div class="loading-bar">
-      <div class="loading-progress"></div>
-    </div>
-    
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">🌞</div>
-        <div class="feature-text">Solar Tracking</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🌪️</div>
-        <div class="feature-text">Wind Analytics</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔋</div>
-        <div class="feature-text">V2G Integration</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📊</div>
-        <div class="feature-text">AI Forecasting</div>
-      </div>
-    </div>
-    
-    <p class="status-text" id="statusText">Initializing dashboard...</p>
   </div>
 
   <!-- Flutter App Container -->
   <div id="flutter-app">
-    <!-- Flutter will load here -->
     <script src="flutter_bootstrap.js" async></script>
   </div>
 
   <script>
-    // Create animated particles
-    function createParticles() {
-      const particlesContainer = document.getElementById('particles');
-      const particleCount = 15;
-      
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        // Random properties
-        const size = Math.random() * 20 + 5;
-        const left = Math.random() * 100;
-        const delay = Math.random() * 5;
-        const duration = Math.random() * 3 + 3;
-        
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${left}%`;
-        particle.style.animationDelay = `${delay}s`;
-        particle.style.animationDuration = `${duration}s`;
-        
-        particlesContainer.appendChild(particle);
-      }
-    }
-
-    // Update status text during loading
-    function updateStatus() {
-      const statusText = document.getElementById('statusText');
-      const messages = [
-        "Loading energy data...",
-        "Connecting to grid...",
-        "Initializing V2G systems...",
-        "Starting real-time monitoring...",
-        "Dashboard ready!"
-      ];
-      
-      let currentMessage = 0;
-      
-      const interval = setInterval(() => {
-        if (currentMessage < messages.length) {
-          statusText.textContent = messages[currentMessage];
-          currentMessage++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 600);
-    }
-
-    // Smooth transition to Flutter app
-    function transitionToDashboard() {
-      setTimeout(() => {
-        const introContainer = document.getElementById('introContainer');
-        const flutterApp = document.getElementById('flutter-app');
-        
-        // Fade out intro
-        introContainer.style.opacity = '0';
-        
-        setTimeout(() => {
-          // Hide intro completely
-          introContainer.style.display = 'none';
-          
-          // Show Flutter app
-          flutterApp.classList.add('loaded');
-          
-          // The Flutter app will now be visible and interactive
-        }, 800);
-      }, 4000); // 4 seconds total animation time
-    }
-
-    // Initialize everything when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      createParticles();
-      updateStatus();
-      transitionToDashboard();
+      const introScreen = document.getElementById('intro-screen');
+      const flutterApp = document.getElementById('flutter-app');
+      const loadingProgress = document.getElementById('loading-progress');
       
-      // Preload Flutter app in background
-      const flutterScript = document.createElement('script');
-      flutterScript.src = 'flutter_bootstrap.js';
-      flutterScript.async = true;
-      document.head.appendChild(flutterScript);
-    });
+      // Simulate loading progress
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(progressInterval);
+          
+          // Start the transition
+          setTimeout(() => {
+            // Hide intro with animation
+            introScreen.style.opacity = '0';
+            introScreen.style.transform = 'scale(1.1)';
+            
+            // Show Flutter app
+            setTimeout(() => {
+              introScreen.style.display = 'none';
+              flutterApp.style.opacity = '1';
+              
+              // Initialize Flutter app
+              initializeFlutterApp();
+            }, 1000);
+          }, 500);
+        }
+        loadingProgress.style.width = progress + '%';
+      }, 200);
 
-    // Add keyboard shortcut to skip intro
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' || e.key === ' ') {
-        const introContainer = document.getElementById('introContainer');
-        const flutterApp = document.getElementById('flutter-app');
+      // Add some interactive effects
+      const features = document.querySelectorAll('.feature-item');
+      features.forEach(feature => {
+        feature.addEventListener('mouseenter', () => {
+          feature.style.transform = 'translateY(-10px) scale(1.05)';
+        });
         
-        introContainer.style.display = 'none';
-        flutterApp.classList.add('loaded');
-      }
-    });
+        feature.addEventListener('mouseleave', () => {
+          feature.style.transform = 'translateY(0px) scale(1)';
+        });
+      });
 
-    // Also allow click to skip
-    document.addEventListener('click', function(e) {
-      if (e.target.closest('.intro-container')) {
-        const introContainer = document.getElementById('introContainer');
-        const flutterApp = document.getElementById('flutter-app');
-        
-        introContainer.style.display = 'none';
-        flutterApp.classList.add('loaded');
+      // Initialize Flutter app
+      function initializeFlutterApp() {
+        if (typeof _flutter !== 'undefined') {
+          _flutter.loader.loadEntrypoint({
+            onEntrypointLoaded: async function(engineInitializer) {
+              try {
+                const appRunner = await engineInitializer.initializeEngine({
+                  hostElement: document.getElementById('flutter-app'),
+                  renderer: 'canvaskit',
+                });
+                await appRunner.runApp();
+                console.log('Flutter app initialized successfully');
+              } catch (error) {
+                console.error('Error initializing Flutter app:', error);
+                showError('Failed to load energy dashboard');
+              }
+            }
+          });
+        } else {
+          console.error('Flutter is not supported in this browser');
+          showError('Your browser does not support this application');
+        }
       }
+
+      function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 0, 0, 0.9);
+          color: white;
+          padding: 2rem;
+          border-radius: 10px;
+          text-align: center;
+          z-index: 10000;
+        `;
+        errorDiv.innerHTML = `
+          <h3>🚨 Application Error</h3>
+          <p>${message}</p>
+          <button onclick="window.location.reload()" style="
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            color: red;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          ">Retry</button>
+        `;
+        document.body.appendChild(errorDiv);
+      }
+
+      // Add keyboard shortcut to skip intro
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' || e.key === ' ') {
+          clearInterval(progressInterval);
+          loadingProgress.style.width = '100%';
+          setTimeout(() => {
+            introScreen.style.opacity = '0';
+            introScreen.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+              introScreen.style.display = 'none';
+              flutterApp.style.opacity = '1';
+              initializeFlutterApp();
+            }, 500);
+          }, 300);
+        }
+      });
     });
   </script>
 </body>
