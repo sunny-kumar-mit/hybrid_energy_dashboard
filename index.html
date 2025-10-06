@@ -1,38 +1,343 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="/">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Advanced Hybrid Energy Management Dashboard">
+  
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="flutter_application_16">
+  <meta name="apple-mobile-web-app-title" content="Energy Dashboard">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
+  
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>flutter_application_16</title>
+  
+  <title>Hybrid Energy Dashboard</title>
   <link rel="manifest" href="manifest.json">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-container {
+      text-align: center;
+      color: white;
+      z-index: 10;
+      position: relative;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .logo-inner {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #00ff88, #00ccff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: white;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #00ff88, #00ccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1s forwards;
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin: 30px auto;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.5s forwards;
+    }
+
+    .loading-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #00ccff);
+      border-radius: 10px;
+      animation: loading 2.5s ease 2s forwards;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+      opacity: 0;
+      animation: fadeInUp 1s ease 2s forwards;
+    }
+
+    .feature {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      min-width: 150px;
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: floatParticle 6s ease-in-out infinite;
+    }
+
+    .status-text {
+      margin-top: 20px;
+      font-size: 1rem;
+      opacity: 0.8;
+      opacity: 0;
+      animation: fadeInUp 1s ease 3s forwards;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes loading {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes floatParticle {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      .subtitle { font-size: 1.1rem; }
+      .features { flex-direction: column; align-items: center; }
+      .feature { min-width: 200px; }
+    }
+  </style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Animated Background Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Main Intro Content -->
+  <div class="intro-container">
+    <div class="logo">
+      <div class="logo-inner">⚡</div>
+    </div>
+    
+    <h1>Hybrid Energy Dashboard</h1>
+    <p class="subtitle">Smart Energy Management & Real-time Monitoring</p>
+    
+    <div class="loading-bar">
+      <div class="loading-progress"></div>
+    </div>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🌞</div>
+        <div class="feature-text">Solar Tracking</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌪️</div>
+        <div class="feature-text">Wind Analytics</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔋</div>
+        <div class="feature-text">V2G Integration</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-text">AI Forecasting</div>
+      </div>
+    </div>
+    
+    <p class="status-text" id="statusText">Initializing dashboard...</p>
+  </div>
+
+  <!-- Hidden Flutter Container -->
+  <div id="flutter-app" style="display: none;">
+    <script src="flutter_bootstrap.js" async></script>
+  </div>
+
+  <script>
+    // Create animated particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 20 + 5;
+        const left = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = Math.random() * 3 + 3;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Update status text during loading
+    function updateStatus() {
+      const statusText = document.getElementById('statusText');
+      const messages = [
+        "Loading energy data...",
+        "Connecting to grid...",
+        "Initializing V2G systems...",
+        "Starting real-time monitoring...",
+        "Dashboard ready!"
+      ];
+      
+      let currentMessage = 0;
+      
+      const interval = setInterval(() => {
+        if (currentMessage < messages.length) {
+          statusText.textContent = messages[currentMessage];
+          currentMessage++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 500);
+    }
+
+    // Redirect to Flutter app after animation
+    function redirectToDashboard() {
+      setTimeout(() => {
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(() => {
+          // Show Flutter app
+          document.getElementById('flutter-app').style.display = 'block';
+          // Reload to start Flutter app
+          window.location.reload();
+        }, 500);
+      }, 4000); // 4 seconds total animation time
+    }
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+      updateStatus();
+      redirectToDashboard();
+    });
+
+    // Add keyboard shortcut to skip intro
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.key === ' ') {
+        document.getElementById('flutter-app').style.display = 'block';
+        window.location.reload();
+      }
+    });
+  </script>
 </body>
 </html>
