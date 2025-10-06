@@ -34,6 +34,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: opacity 0.8s ease;
     }
 
     .intro-container {
@@ -41,6 +42,7 @@
       color: white;
       z-index: 10;
       position: relative;
+      transition: opacity 0.8s ease;
     }
 
     .logo {
@@ -106,7 +108,7 @@
       height: 100%;
       background: linear-gradient(90deg, #00ff88, #00ccff);
       border-radius: 10px;
-      animation: loading 2.5s ease 2s forwards;
+      animation: loading 3s ease 2s forwards;
     }
 
     .features {
@@ -166,6 +168,23 @@
       animation: fadeInUp 1s ease 3s forwards;
     }
 
+    /* Flutter app container */
+    #flutter-app {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      pointer-events: none;
+    }
+
+    #flutter-app.loaded {
+      opacity: 1;
+      pointer-events: all;
+    }
+
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-20px); }
@@ -221,7 +240,7 @@
   <div class="particles" id="particles"></div>
 
   <!-- Main Intro Content -->
-  <div class="intro-container">
+  <div class="intro-container" id="introContainer">
     <div class="logo">
       <div class="logo-inner">⚡</div>
     </div>
@@ -255,8 +274,9 @@
     <p class="status-text" id="statusText">Initializing dashboard...</p>
   </div>
 
-  <!-- Hidden Flutter Container -->
-  <div id="flutter-app" style="display: none;">
+  <!-- Flutter App Container -->
+  <div id="flutter-app">
+    <!-- Flutter will load here -->
     <script src="flutter_bootstrap.js" async></script>
   </div>
 
@@ -306,21 +326,27 @@
         } else {
           clearInterval(interval);
         }
-      }, 500);
+      }, 600);
     }
 
-    // Redirect to Flutter app after animation
-    function redirectToDashboard() {
+    // Smooth transition to Flutter app
+    function transitionToDashboard() {
       setTimeout(() => {
-        document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.5s ease';
+        const introContainer = document.getElementById('introContainer');
+        const flutterApp = document.getElementById('flutter-app');
+        
+        // Fade out intro
+        introContainer.style.opacity = '0';
         
         setTimeout(() => {
+          // Hide intro completely
+          introContainer.style.display = 'none';
+          
           // Show Flutter app
-          document.getElementById('flutter-app').style.display = 'block';
-          // Reload to start Flutter app
-          window.location.reload();
-        }, 500);
+          flutterApp.classList.add('loaded');
+          
+          // The Flutter app will now be visible and interactive
+        }, 800);
       }, 4000); // 4 seconds total animation time
     }
 
@@ -328,14 +354,34 @@
     document.addEventListener('DOMContentLoaded', function() {
       createParticles();
       updateStatus();
-      redirectToDashboard();
+      transitionToDashboard();
+      
+      // Preload Flutter app in background
+      const flutterScript = document.createElement('script');
+      flutterScript.src = 'flutter_bootstrap.js';
+      flutterScript.async = true;
+      document.head.appendChild(flutterScript);
     });
 
     // Add keyboard shortcut to skip intro
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' || e.key === ' ') {
-        document.getElementById('flutter-app').style.display = 'block';
-        window.location.reload();
+        const introContainer = document.getElementById('introContainer');
+        const flutterApp = document.getElementById('flutter-app');
+        
+        introContainer.style.display = 'none';
+        flutterApp.classList.add('loaded');
+      }
+    });
+
+    // Also allow click to skip
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.intro-container')) {
+        const introContainer = document.getElementById('introContainer');
+        const flutterApp = document.getElementById('flutter-app');
+        
+        introContainer.style.display = 'none';
+        flutterApp.classList.add('loaded');
       }
     });
   </script>
